@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import bitsandbytes as bnb
 from transformers import AutoTokenizer, AutoConfig, AutoModelForCausalLM
 # from transformers import pipeline, BitsAndBytesConfig
 import argparse
@@ -125,7 +124,8 @@ training_arguments = transformers.TrainingArguments(
 
 
 with open(f"./data/{task_name}/user_top_100_history.json", 'r') as f:
-    test_data = json.load(f)
+    # test_data = json.load(f)
+    test_data = json.load(f)[:10]
 
 format_flag = False
 if args.task_name == "movie_tagging":
@@ -258,7 +258,8 @@ for i in tqdm(range(len(test_data))):
 
     # print(train_data)
 
-    train_dataset = Dataset.from_list(train_data)
+    # train_dataset = Dataset.from_list(train_data)
+    train_dataset = Dataset.from_list(train_data[:10])
     train_dataset = train_dataset.map(generate_and_tokenize_prompt).shuffle()
 
     trainer = transformers.Trainer(
@@ -328,7 +329,8 @@ for i in tqdm(range(len(test_data))):
         test_question_list.append(test_prompt)
         question_id_list.append(q['id'])
 
-    test_batch_list = split_batch(test_question_list, 1)
+    # test_batch_list = split_batch(test_question_list, 1)
+    test_batch_list = split_batch(test_question_list, 1)[:10]
     out_list = []
 
     with torch.no_grad():
@@ -369,6 +371,7 @@ output_file = {
     'model': model_name,
 }
 
+import ipdb;ipdb.set_trace()
 if args.add_profile:
     with open('./output/{}/output-OPPU-k{}-{}-{}-profile.json'.format(args.k, args.task_name, args.task_name, model_name.split('/')[-1]), 'w') as f:
         json.dump(output_file, f, indent=4)

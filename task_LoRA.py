@@ -11,6 +11,7 @@ from utils import split_batch, get_first_k_tokens, print_trainable_parameters, n
 from utils import extract_citation_title, extract_option, extract_movie, extract_news_cat, extract_news_headline, extract_product_review, extract_scholarly_title, extract_tweet_paraphrasing
 import json
 from tqdm import tqdm
+from pathlib import Path
 
 
 parser = argparse.ArgumentParser(description="Parser for LoRA")
@@ -376,6 +377,8 @@ output_file = {
 }
 
 if args.add_profile:
+    path = Path('./output/{}/'.format(args.k))
+    path.mkdir(parents=True, exist_ok=True)
     with open('./output/{}/output-task-k{}-{}-{}-profile.json'.format(args.k, args.task_name, args.task_name, model_name.split('/')[-1]), 'w') as f:
         json.dump(output_file, f, indent=4)
 else:

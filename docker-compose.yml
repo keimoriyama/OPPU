@@ -2,11 +2,11 @@ volumes:
   venv:
 
 services:
-    moriyama_task:
+    oppu_reproduce:
         build:
             context: .
             dockerfile: Dockerfile
-        image: OPPU_reproduce
+        image: oppu_reproduce
         volumes:
           - type: bind
             source: .
@@ -16,6 +16,7 @@ services:
         environment:
           NVIDIA_VISIBLE_DEVICES: all
           NVIDIA_DRIVER_CAPABILITIES: all
+          HUGGING_FACE_HUB_TOKEN: ${HUGGING_FACE_HUB_TOKEN}
         deploy:
           resources:
             reservations:
@@ -23,5 +24,6 @@ services:
                 - capabilities:
                     - gpu
         command: tail -f /dev/null
-        container_name: OPPU_reproduce
-
+        ports:
+          - '5000:5000'
+        container_name: oppu_reproduce

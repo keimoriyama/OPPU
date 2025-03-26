@@ -60,8 +60,6 @@ COPY --chmod=777 pyproject.toml uv.lock ./
 
 RUN uv sync
 
-RUN uv add "jax[cuda12]"
-
-ENV PATH="$PATH:/app/.venv/bin"
+ENV PATH="/app/.venv/bin:$PATH"
 
 CMD ["/bin/bash"]
