@@ -376,9 +376,8 @@ output_file = {
     'model': model_name,
 }
 
+Path('./output/{}/'.format(args.k)).mkdir(parents=True, exist_ok=True)
 if args.add_profile:
-    path = Path('./output/{}/'.format(args.k))
-    path.mkdir(parents=True, exist_ok=True)
     with open('./output/{}/output-task-k{}-{}-{}-profile.json'.format(args.k, args.task_name, args.task_name, model_name.split('/')[-1]), 'w') as f:
         json.dump(output_file, f, indent=4)
 else:

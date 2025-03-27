@@ -11,6 +11,7 @@ from utils import extract_citation_title, extract_option, extract_movie, extract
 import json
 from tqdm import tqdm
 from peft import LoraConfig, get_peft_model, PeftModel
+from pathlib import Path
 
 
 parser = argparse.ArgumentParser(description="Parser for LoRA")
@@ -124,7 +125,6 @@ training_arguments = transformers.TrainingArguments(
 
 
 with open(f"./data/{task_name}/user_top_100_history.json", 'r') as f:
-    # test_data = json.load(f)
     test_data = json.load(f)[:10]
 
 format_flag = False
@@ -258,8 +258,7 @@ for i in tqdm(range(len(test_data))):
 
     # print(train_data)
 
-    # train_dataset = Dataset.from_list(train_data)
-    train_dataset = Dataset.from_list(train_data[:10])
+    train_dataset = Dataset.from_list(train_data)
     train_dataset = train_dataset.map(generate_and_tokenize_prompt).shuffle()
 
     trainer = transformers.Trainer(
@@ -329,8 +328,7 @@ for i in tqdm(range(len(test_data))):
         test_question_list.append(test_prompt)
         question_id_list.append(q['id'])
 
-    # test_batch_list = split_batch(test_question_list, 1)
-    test_batch_list = split_batch(test_question_list, 1)[:10]
+    test_batch_list = split_batch(test_question_list, 1)
     out_list = []
 
     with torch.no_grad():
@@ -371,7 +369,7 @@ output_file = {
     'model': model_name,
 }
 
-import ipdb;ipdb.set_trace()
+Path('./output/{}'.format(args.k)).mkdir(parents=True, exist_ok=True)
 if args.add_profile:
     with open('./output/{}/output-OPPU-k{}-{}-{}-profile.json'.format(args.k, args.task_name, args.task_name, model_name.split('/')[-1]), 'w') as f:
         json.dump(output_file, f, indent=4)
